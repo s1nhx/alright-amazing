@@ -49,26 +49,6 @@ void game_loop() {
 	RefInputBox()->AddCommand("drugskey", (sampapi::CMDPROC)set_drugs_key);
 	RefInputBox()->AddCommand("debugee", (sampapi::CMDPROC)debugee_mode);
 
-	// hook CEF
-	rakhook::on_receive_rpc += [](unsigned char& id, RakNet::BitStream* bs) -> bool {
-		if (id == 252) {
-			UINT8 cef_packet_type;
-
-			bs->Read(cef_packet_type);
-			bs->Read(cef_app_set_mode);
-			bs->Read(strange_byte);
-
-			bs->IgnoreBits(16);
-
-			std::string packet_name = read_with_size<uint16_t>(bs);
-			std::string packet_data = read_with_size<uint16_t>(bs);
-
-			RefChat()->AddMessage(0, packet_name.c_str());
-			RefChat()->AddMessage(0, packet_data.c_str());
-		}
-		return true;
-		};
-
 	initialized = true;
 }
 
